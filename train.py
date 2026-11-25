@@ -1,5 +1,6 @@
 import os
 os.makedirs("Results", exist_ok=True)
+os.makedirs("Model", exist_ok=True)
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
