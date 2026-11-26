@@ -24,3 +24,17 @@ update-branch:
 	git config --global user.email $(USER_EMAIL)
 	git commit -am "Update with new results"
 	git push --force origin HEAD:update
+
+hf-login:
+	git fetch origin update
+	git switch update
+	git pull --ff-only origin update
+	python -m pip install -U huggingface_hub
+	hf auth login --token "$$HF"
+
+push-hub:
+	hf upload rsangam/Drug-Classification ./App . --repo-type=space --commit-message="Sync App files"
+	hf upload rsangam/Drug-Classification ./Model Model --repo-type=space --commit-message="Sync Model"
+	hf upload rsangam/Drug-Classification ./Results Metrics --repo-type=space --commit-message="Sync Metrics"
+
+deploy: hf-login push-hub

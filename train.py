@@ -1,4 +1,5 @@
 import os
+
 os.makedirs("Results", exist_ok=True)
 os.makedirs("Model", exist_ok=True)
 
@@ -11,7 +12,7 @@ drug_df = drug_df.sample(frac=1)
 print("Shape", drug_df.shape)
 print(drug_df.head(3))
 
-#Test Train Split
+# Test Train Split
 X = drug_df.drop("Drug", axis=1).values
 y = drug_df.Drug.values
 
@@ -19,26 +20,28 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=125
 )
 
-#Processing Pipelines
+# Processing Pipelines
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler
 
-cat_col = [1,2,3]
-num_col = [0,4]
+cat_col = [1, 2, 3]
+num_col = [0, 4]
 
-num_pipeline = Pipeline([
-    ("imputer", SimpleImputer(strategy="median")),
-    ("scaler", StandardScaler()),
-])
+num_pipeline = Pipeline(
+    [
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler", StandardScaler()),
+    ]
+)
 
 transform = ColumnTransformer(
     [
         ("encoder", OrdinalEncoder(), cat_col),
-        #("num_imputer", SimpleImputer(strategy="median"), num_col),
-        #("num_scaler", StandardScaler(), num_col),
+        # ("num_imputer", SimpleImputer(strategy="median"), num_col),
+        # ("num_scaler", StandardScaler(), num_col),
         ("num", num_pipeline, num_col),
     ]
 )
@@ -50,7 +53,7 @@ pipe = Pipeline(
 )
 pipe.fit(X_train, y_train)
 
-#Model Evaluation
+# Model Evaluation
 from sklearn.metrics import accuracy_score, f1_score
 
 predictions = pipe.predict(X_test)
@@ -59,11 +62,11 @@ f1 = f1_score(y_test, predictions, average="macro")
 
 print("Accuracy:", str(round(accuracy, 2) * 100) + "%", "F1:", round(f1, 2))
 
-#Metrics file
+# Metrics file
 with open("Results/metrics.txt", "w") as outfile:
     outfile.write(f"\nAccuracy = {round(accuracy, 2)}, F1 Score = {round(f1, 2)}.")
 
-#Confusion Matrix
+# Confusion Matrix
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 
@@ -73,10 +76,10 @@ disp.plot()
 plt.savefig("Results/model_results.png", dpi=120)
 plt.show()
 
-#Saving the model
+# Saving the model
 import skops.io as sio
 
 sio.dump(pipe, "Model/drug_pipeline.skops")
 print("Model Saved")
 
-#sio.load("Model/drug_pipeline.skops", trusted=True)
+# sio.load("Model/drug_pipeline.skops", trusted=True)
