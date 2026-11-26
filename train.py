@@ -61,7 +61,7 @@ print("Accuracy:", str(round(accuracy, 2) * 100) + "%", "F1:", round(f1, 2))
 
 #Metrics file
 with open("Results/metrics.txt", "w") as outfile:
-    outfile.write(f"\nAccuracy = {accuracy}, F1 Score = {f1}.")
+    outfile.write(f"\nAccuracy = {round(accuracy, 2)}, F1 Score = {round(f1, 2)}.")
 
 #Confusion Matrix
 import matplotlib.pyplot as plt
