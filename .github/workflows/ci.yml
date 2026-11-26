@@ -41,12 +41,6 @@ jobs:
       - name: Train
         run: make train
 
-      - name: Upload results
-        uses: actions/upload-artifact@v4
-        with:
-          name: results
-          path: Results/
-
       - name: Evaluation
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
